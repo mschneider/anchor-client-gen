@@ -172,10 +172,19 @@
           }
         },
         {
-          "name": "arrayField",
+          "name": "boolArrayField",
           "type": {
             "array": [
               "bool",
+              3
+            ]
+          }
+        },
+        {
+          "name": "u8ArrayField",
+          "type": {
+            "array": [
+              "u8",
               3
             ]
           }
@@ -347,10 +356,19 @@
             }
           },
           {
-            "name": "arrayField",
+            "name": "boolArrayField",
             "type": {
               "array": [
                 "bool",
+                3
+              ]
+            }
+          },
+          {
+            "name": "u8ArrayField",
+            "type": {
+              "array": [
+                "u8",
                 3
               ]
             }

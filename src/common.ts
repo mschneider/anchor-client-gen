@@ -63,12 +63,16 @@ export function tsTypeFromIdl(
       return "PublicKey"
     default:
       if ("vec" in ty) {
-        return `Array<${tsTypeFromIdl(
-          idl,
-          ty.vec,
-          definedTypesPrefix,
-          useFieldsInterfaceForStruct
-        )}>`
+        if (ty.vec === "u8") {
+          return "Uint8Array"
+        } else {
+          return `Array<${tsTypeFromIdl(
+            idl,
+            ty.vec,
+            definedTypesPrefix,
+            useFieldsInterfaceForStruct
+          )}>`
+        }
       }
       if ("option" in ty) {
         return `${tsTypeFromIdl(
@@ -106,12 +110,16 @@ export function tsTypeFromIdl(
         }
       }
       if ("array" in ty) {
-        return `Array<${tsTypeFromIdl(
-          idl,
-          ty.array[0],
-          definedTypesPrefix,
-          useFieldsInterfaceForStruct
-        )}>`
+        if (ty.array[0] === "u8") {
+          return "Uint8Array"
+        } else {
+          return `Array<${tsTypeFromIdl(
+            idl,
+            ty.array[0],
+            definedTypesPrefix,
+            useFieldsInterfaceForStruct
+          )}>`
+        }
       }
   }
 
@@ -522,6 +530,10 @@ export function fieldToJSON(idl: Idl, ty: IdlField, valPrefix = ""): string {
       return `Array.from(${valPrefix}${ty.name}.values())`
     default:
       if ("vec" in ty.type) {
+        if (ty.type.vec === "u8") {
+          return `Array.from(${valPrefix}${ty.name}.values())`
+        }
+
         const mapBody = fieldToJSON(idl, {
           name: "item",
           type: ty.type.vec,
@@ -533,6 +545,10 @@ export function fieldToJSON(idl: Idl, ty: IdlField, valPrefix = ""): string {
         return `${valPrefix}${ty.name}.map((item) => ${mapBody})`
       }
       if ("array" in ty.type) {
+        if (ty.type.array[0] === "u8") {
+          return `Array.from(${valPrefix}${ty.name}.values())`
+        }
+
         const mapBody = fieldToJSON(idl, {
           name: "item",
           type: ty.type.array[0],
@@ -671,6 +687,10 @@ export function fieldFromJSON(
       return `new PublicKey(${paramPrefix}${ty.name})`
     default:
       if ("vec" in ty.type) {
+        if (ty.type.vec[0] == "u8") {
+          return `Uint8Array.from(${paramPrefix}${ty.name})`
+        }
+
         const mapBody = fieldFromJSON(
           {
             name: "item",
@@ -686,6 +706,10 @@ export function fieldFromJSON(
         return `${paramPrefix}${ty.name}.map((item) => ${mapBody})`
       }
       if ("array" in ty.type) {
+        if (ty.type.array[0] == "u8") {
+          return `Uint8Array.from(${paramPrefix}${ty.name})`
+        }
+
         const mapBody = fieldFromJSON(
           {
             name: "item",
