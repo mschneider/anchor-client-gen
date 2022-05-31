@@ -18,7 +18,7 @@ export interface InitializeWithValuesArgs {
   f64Field: number
   u128Field: BN
   i128Field: BN
-  bytesField: Uint8Array
+  bytesField: Buffer
   stringField: string
   pubkeyField: PublicKey
   vecField: Array<BN>
@@ -26,7 +26,8 @@ export interface InitializeWithValuesArgs {
   optionField: boolean | null
   optionStructField: types.FooStructFields | null
   structField: types.FooStructFields
-  arrayField: Array<boolean>
+  boolArrayField: Array<boolean>
+  u8ArrayField: Uint8Array
   enumField1: types.FooEnumKind
   enumField2: types.FooEnumKind
   enumField3: types.FooEnumKind
@@ -34,10 +35,8 @@ export interface InitializeWithValuesArgs {
 }
 
 export interface InitializeWithValuesAccounts {
-  /** State account */
   state: PublicKey
   nested: {
-    /** Sysvar clock */
     clock: PublicKey
     rent: PublicKey
   }
@@ -67,14 +66,14 @@ export const layout = borsh.struct([
   borsh.option(borsh.bool(), "optionField"),
   borsh.option(types.FooStruct.layout(), "optionStructField"),
   types.FooStruct.layout("structField"),
-  borsh.array(borsh.bool(), 3, "arrayField"),
+  borsh.array(borsh.bool(), 3, "boolArrayField"),
+  borsh.array(borsh.u8(), 3, "u8ArrayField"),
   types.FooEnum.layout("enumField1"),
   types.FooEnum.layout("enumField2"),
   types.FooEnum.layout("enumField3"),
   types.FooEnum.layout("enumField4"),
 ])
 
-/** Initializes an account with specified values */
 export function initializeWithValues(
   args: InitializeWithValuesArgs,
   accounts: InitializeWithValuesAccounts
@@ -120,7 +119,8 @@ export function initializeWithValues(
           types.FooStruct.toEncodable(args.optionStructField)) ||
         null,
       structField: types.FooStruct.toEncodable(args.structField),
-      arrayField: args.arrayField,
+      boolArrayField: args.boolArrayField,
+      u8ArrayField: args.u8ArrayField,
       enumField1: args.enumField1.toEncodable(),
       enumField2: args.enumField2.toEncodable(),
       enumField3: args.enumField3.toEncodable(),
