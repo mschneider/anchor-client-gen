@@ -175,7 +175,7 @@ test("init and account fetch", async () => {
   }
 
   expect(res.boolArrayField).toStrictEqual([true, false, true])
-  expect(res.u8ArrayField).toStrictEqual([0, 1, 255])
+  expect(res.u8ArrayField).toStrictEqual(Uint8Array.from([0, 1, 255]))
 
   // enumField1
   {
@@ -485,7 +485,7 @@ test("instruction with args", async () => {
 
   // arrayField
   expect(res.boolArrayField).toStrictEqual([true, true, false])
-  expect(res.u8ArrayField).toStrictEqual([0, 1, 255])
+  expect(res.u8ArrayField).toStrictEqual(Uint8Array.from([0, 1, 255]))
 
   // enumField1
   {

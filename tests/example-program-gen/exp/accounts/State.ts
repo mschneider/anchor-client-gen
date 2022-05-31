@@ -228,7 +228,7 @@ export class State {
         null,
       structField: types.FooStruct.fromDecoded(dec.structField),
       boolArrayField: dec.boolArrayField,
-      u8ArrayField: dec.u8ArrayField,
+      u8ArrayField: Uint8Array.from(dec.u8ArrayField),
       enumField1: types.FooEnum.fromDecoded(dec.enumField1),
       enumField2: types.FooEnum.fromDecoded(dec.enumField2),
       enumField3: types.FooEnum.fromDecoded(dec.enumField3),

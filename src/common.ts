@@ -380,6 +380,10 @@ export function fieldFromDecoded(
         }
       }
       if ("array" in ty.type) {
+        if (ty.type.array[0] === "u8") {
+          return `Uint8Array.from(${valPrefix}${ty.name})`
+        }
+
         const mapBody = fieldFromDecoded(
           idl,
           {
