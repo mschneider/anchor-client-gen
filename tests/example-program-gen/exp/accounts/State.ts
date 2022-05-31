@@ -5,7 +5,6 @@ import * as types from "../types" // eslint-disable-line @typescript-eslint/no-u
 import { PROGRAM_ID } from "../programId"
 
 export interface StateFields {
-  /** A boolean field */
   boolField: boolean
   u8Field: number
   i8Field: number
@@ -19,7 +18,7 @@ export interface StateFields {
   f64Field: number
   u128Field: BN
   i128Field: BN
-  bytesField: Uint8Array
+  bytesField: Buffer
   stringField: string
   pubkeyField: PublicKey
   vecField: Array<BN>
@@ -27,7 +26,8 @@ export interface StateFields {
   optionField: boolean | null
   optionStructField: types.FooStructFields | null
   structField: types.FooStructFields
-  arrayField: Array<boolean>
+  boolArrayField: Array<boolean>
+  u8ArrayField: Uint8Array
   enumField1: types.FooEnumKind
   enumField2: types.FooEnumKind
   enumField3: types.FooEnumKind
@@ -35,7 +35,6 @@ export interface StateFields {
 }
 
 export interface StateJSON {
-  /** A boolean field */
   boolField: boolean
   u8Field: number
   i8Field: number
@@ -57,16 +56,15 @@ export interface StateJSON {
   optionField: boolean | null
   optionStructField: types.FooStructJSON | null
   structField: types.FooStructJSON
-  arrayField: Array<boolean>
+  boolArrayField: Array<boolean>
+  u8ArrayField: Array<number>
   enumField1: types.FooEnumJSON
   enumField2: types.FooEnumJSON
   enumField3: types.FooEnumJSON
   enumField4: types.FooEnumJSON
 }
 
-/** An account containing various fields */
 export class State {
-  /** A boolean field */
   readonly boolField: boolean
   readonly u8Field: number
   readonly i8Field: number
@@ -80,7 +78,7 @@ export class State {
   readonly f64Field: number
   readonly u128Field: BN
   readonly i128Field: BN
-  readonly bytesField: Uint8Array
+  readonly bytesField: Buffer
   readonly stringField: string
   readonly pubkeyField: PublicKey
   readonly vecField: Array<BN>
@@ -88,7 +86,8 @@ export class State {
   readonly optionField: boolean | null
   readonly optionStructField: types.FooStruct | null
   readonly structField: types.FooStruct
-  readonly arrayField: Array<boolean>
+  readonly boolArrayField: Array<boolean>
+  readonly u8ArrayField: Uint8Array
   readonly enumField1: types.FooEnumKind
   readonly enumField2: types.FooEnumKind
   readonly enumField3: types.FooEnumKind
@@ -120,7 +119,8 @@ export class State {
     borsh.option(borsh.bool(), "optionField"),
     borsh.option(types.FooStruct.layout(), "optionStructField"),
     types.FooStruct.layout("structField"),
-    borsh.array(borsh.bool(), 3, "arrayField"),
+    borsh.array(borsh.bool(), 3, "boolArrayField"),
+    borsh.array(borsh.u8(), 3, "u8ArrayField"),
     types.FooEnum.layout("enumField1"),
     types.FooEnum.layout("enumField2"),
     types.FooEnum.layout("enumField3"),
@@ -154,7 +154,8 @@ export class State {
         new types.FooStruct({ ...fields.optionStructField })) ||
       null
     this.structField = new types.FooStruct({ ...fields.structField })
-    this.arrayField = fields.arrayField
+    this.boolArrayField = fields.boolArrayField
+    this.u8ArrayField = fields.u8ArrayField
     this.enumField1 = fields.enumField1
     this.enumField2 = fields.enumField2
     this.enumField3 = fields.enumField3
@@ -213,11 +214,7 @@ export class State {
       f64Field: dec.f64Field,
       u128Field: dec.u128Field,
       i128Field: dec.i128Field,
-      bytesField: new Uint8Array(
-        dec.bytesField.buffer,
-        dec.bytesField.byteOffset,
-        dec.bytesField.length
-      ),
+      bytesField: dec.bytesField,
       stringField: dec.stringField,
       pubkeyField: dec.pubkeyField,
       vecField: dec.vecField,
@@ -230,7 +227,8 @@ export class State {
           types.FooStruct.fromDecoded(dec.optionStructField)) ||
         null,
       structField: types.FooStruct.fromDecoded(dec.structField),
-      arrayField: dec.arrayField,
+      boolArrayField: dec.boolArrayField,
+      u8ArrayField: dec.u8ArrayField,
       enumField1: types.FooEnum.fromDecoded(dec.enumField1),
       enumField2: types.FooEnum.fromDecoded(dec.enumField2),
       enumField3: types.FooEnum.fromDecoded(dec.enumField3),
@@ -262,7 +260,8 @@ export class State {
       optionStructField:
         (this.optionStructField && this.optionStructField.toJSON()) || null,
       structField: this.structField.toJSON(),
-      arrayField: this.arrayField,
+      boolArrayField: this.boolArrayField,
+      u8ArrayField: Array.from(this.u8ArrayField.values()),
       enumField1: this.enumField1.toJSON(),
       enumField2: this.enumField2.toJSON(),
       enumField3: this.enumField3.toJSON(),
@@ -285,7 +284,7 @@ export class State {
       f64Field: obj.f64Field,
       u128Field: new BN(obj.u128Field),
       i128Field: new BN(obj.i128Field),
-      bytesField: Uint8Array.from(obj.bytesField),
+      bytesField: Buffer.from(obj.bytesField),
       stringField: obj.stringField,
       pubkeyField: new PublicKey(obj.pubkeyField),
       vecField: obj.vecField.map((item) => new BN(item)),
@@ -298,7 +297,8 @@ export class State {
           types.FooStruct.fromJSON(obj.optionStructField)) ||
         null,
       structField: types.FooStruct.fromJSON(obj.structField),
-      arrayField: obj.arrayField,
+      boolArrayField: obj.boolArrayField,
+      u8ArrayField: Uint8Array.from(obj.u8ArrayField),
       enumField1: types.FooEnum.fromJSON(obj.enumField1),
       enumField2: types.FooEnum.fromJSON(obj.enumField2),
       enumField3: types.FooEnum.fromJSON(obj.enumField3),

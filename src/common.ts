@@ -106,12 +106,16 @@ export function tsTypeFromIdl(
         }
       }
       if ("array" in ty) {
-        return `Array<${tsTypeFromIdl(
-          idl,
-          ty.array[0],
-          definedTypesPrefix,
-          useFieldsInterfaceForStruct
-        )}>`
+        if (ty.array[0] === "u8") {
+          return "Uint8Array"
+        } else {
+          return `Array<${tsTypeFromIdl(
+            idl,
+            ty.array[0],
+            definedTypesPrefix,
+            useFieldsInterfaceForStruct
+          )}>`
+        }
       }
   }
 
@@ -536,6 +540,9 @@ export function fieldToJSON(idl: Idl, ty: IdlField, valPrefix = ""): string {
         return `${valPrefix}${ty.name}.map((item) => ${mapBody})`
       }
       if ("array" in ty.type) {
+        if (ty.type.array[0] === "u8") {
+          return `Array.from(${valPrefix}${ty.name}.values())`
+        }
         const mapBody = fieldToJSON(idl, {
           name: "item",
           type: ty.type.array[0],
@@ -689,6 +696,9 @@ export function fieldFromJSON(
         return `${paramPrefix}${ty.name}.map((item) => ${mapBody})`
       }
       if ("array" in ty.type) {
+        if (ty.type.array[0] == "u8") {
+          return `Uint8Array.from(${paramPrefix}${ty.name})`
+        }
         const mapBody = fieldFromJSON(
           {
             name: "item",

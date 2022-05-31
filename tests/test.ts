@@ -174,7 +174,8 @@ test("init and account fetch", async () => {
     expect(act.enumField.value.nested.otherField).toBe(10)
   }
 
-  expect(res.arrayField).toStrictEqual([true, false, true])
+  expect(res.boolArrayField).toStrictEqual([true, false, true])
+  expect(res.u8ArrayField).toStrictEqual([0, 1, 255])
 
   // enumField1
   {
@@ -335,7 +336,8 @@ test("instruction with args", async () => {
           optionNested: null,
           enumField: new NoFields(),
         }),
-        arrayField: [true, true, false],
+        boolArrayField: [true, true, false],
+        u8ArrayField: Uint8Array.from([0, 1, 255]),
         enumField1: new Unnamed([
           true,
           15,
@@ -482,7 +484,8 @@ test("instruction with args", async () => {
   }
 
   // arrayField
-  expect(res.arrayField).toStrictEqual([true, true, false])
+  expect(res.boolArrayField).toStrictEqual([true, true, false])
+  expect(res.u8ArrayField).toStrictEqual([0, 1, 255])
 
   // enumField1
   {
@@ -687,7 +690,8 @@ test("toJSON", async () => {
       }),
       enumField: new NoFields(),
     }),
-    arrayField: [true, false],
+    boolArrayField: [true, false],
+    u8ArrayField: Uint8Array.from([0, 255]),
     enumField1: new Unnamed([
       false,
       157,
@@ -804,7 +808,8 @@ test("toJSON", async () => {
         kind: "NoFields",
       },
     },
-    arrayField: [true, false],
+    boolArrayField: [true, false],
+    u8ArrayField: [0, 255],
     enumField1: {
       kind: "Unnamed",
       value: [
@@ -971,7 +976,8 @@ test("toJSON", async () => {
   }
 
   // arrayField
-  expect(stateFromJSON.arrayField).toStrictEqual(state.arrayField)
+  expect(stateFromJSON.boolArrayField).toStrictEqual(state.boolArrayField)
+  expect(stateFromJSON.u8ArrayField).toStrictEqual(state.u8ArrayField)
 
   // enumField1
   {
